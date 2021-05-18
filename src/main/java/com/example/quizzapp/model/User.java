@@ -1,5 +1,6 @@
 package com.example.quizzapp.model;
 
+import com.sun.istack.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,6 +20,8 @@ public class User {
     private String lastName;
 
     private String password;
+
+    private String rePassword; //Thêm trường đánh lại password
 
     private String phoneNumber;
 
