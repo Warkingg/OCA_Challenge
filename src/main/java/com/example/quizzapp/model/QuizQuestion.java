@@ -21,6 +21,8 @@ public class QuizQuestion {
     @NotNull(message = "Enter question type")
     private String type;
 
+    private Integer level; //Add level attribute
+
     @ManyToOne
     private Quiz quiz;
 
