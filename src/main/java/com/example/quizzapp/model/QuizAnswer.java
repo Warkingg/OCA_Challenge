@@ -3,6 +3,7 @@ package com.example.quizzapp.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -11,6 +12,7 @@ public class QuizAnswer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Enter content")
     private String content;
 
     private boolean correct;
