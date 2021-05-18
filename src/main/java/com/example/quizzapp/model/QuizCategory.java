@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -13,6 +14,7 @@ public class QuizCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Enter category name")
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
