@@ -1,14 +1,12 @@
 package com.example.quizzapp.controller.user;
 
-import com.example.quizzapp.model.JwtResponse;
-import com.example.quizzapp.model.MessageResponse;
-import com.example.quizzapp.model.Role;
-import com.example.quizzapp.model.User;
+import com.example.quizzapp.model.*;
 import com.example.quizzapp.repository.user.RoleRepository;
 import com.example.quizzapp.repository.user.UserRepository;
 import com.example.quizzapp.services.jwt.JwtService;
 import com.example.quizzapp.services.role.RoleService;
 import com.example.quizzapp.services.user.IUserService;
+import com.example.quizzapp.services.user.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +45,9 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private VerificationTokenService verificationTokenService;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         Authentication authentication = authenticationManager.authenticate(
@@ -68,6 +69,11 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {
+            Response response = new Response();
+            response.setMessage("xảy ra lỗi");
+            return new ResponseEntity<>("xảy ra lỗi",HttpStatus.BAD_REQUEST);
+        }
+        if (!userService.isCorrectConfirmPassword(user)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Iterable<User> users = userService.findAll();
@@ -88,7 +94,11 @@ public class AuthController {
             user.setRoles(roles1);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRePassword(passwordEncoder.encode(user.getRePassword()));
         userService.save(user);
+        VerificationToken token = new VerificationToken(user);
+        token.setExpiryDate(10);
+        verificationTokenService.save(token);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 }
