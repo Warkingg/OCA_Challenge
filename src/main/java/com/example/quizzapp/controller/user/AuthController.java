@@ -7,6 +7,7 @@ import com.example.quizzapp.model.User;
 import com.example.quizzapp.repository.user.RoleRepository;
 import com.example.quizzapp.repository.user.UserRepository;
 import com.example.quizzapp.services.jwt.JwtService;
+import com.example.quizzapp.services.role.RoleService;
 import com.example.quizzapp.services.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,13 +39,13 @@ public class AuthController {
     private JwtService jwtService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
     private IUserService userService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
@@ -62,30 +66,29 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Validated @RequestBody User user){
-        if (userRepository.existsByUsername(user.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult){
+        if (bindingResult.hasFieldErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        if (userRepository.existsByEmail(user.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+        Iterable<User> users = userService.findAll();
+        for (User currentUser : users) {
+            if (currentUser.getUsername().equals(user.getUsername())) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         }
-        User newUser = new User(user.getId(),
-                user.getUsername(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getPassword(),
-                user.getPhoneNumber(),
-                user.getEmail());
-        Role role = new Role();
-        role.setId(1);
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        userRepository.save(newUser);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        if (user.getRoles() != null) {
+            Role role = roleService.findByName("ROLE_ADMIN");
+            Set<Role> roles = new HashSet<>();
+            roles.add(role);
+            user.setRoles(roles);
+        } else {
+            Role role1 = roleService.findByName("ROLE_USER");
+            Set<Role> roles1 = new HashSet<>();
+            roles1.add(role1);
+            user.setRoles(roles1);
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 }

@@ -29,16 +29,10 @@ public class User {
     @Size(max = 30, message = "Enter your last name")
     private String lastName;
 
-    @NotNull
-    @Size(min = 6, max = 20, message = "Enter your password, 6 to 20 characters")
     private String password;
 
-    @NotNull(message = "Confirm your password")
-    @Size(min = 6, max = 20, message = "Enter 6 to 20 characters")
     private String rePassword;
 
-    @NotNull(message = "Enter your phone number")
-    @Pattern(regexp = "/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/", message = "Enter your phone number, max 20 characters")
     private String phoneNumber;
 
     @NotNull
@@ -51,21 +45,4 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<Role> roles;
 
-    public User(Long id,  String username, String firstName, String lastName,String password, String phoneNumber, String email) {
-        this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-    }
 }
-//{
-//        "username":"1",
-//        "firstName":"tú",
-//        "lastName":"tú",
-//        "password":"anhtu123",
-//        "phoneNumber":"0327880046",
-//        "email":"tú@gmail.com"
-//        }
