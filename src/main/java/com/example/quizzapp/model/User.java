@@ -46,6 +46,26 @@ public class User {
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<Role> roles;
 
+    public User(Long id,  String username, String firstName, String lastName,String password, String phoneNumber, String email) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
 }
+//{
+//        "username":"1",
+//        "firstName":"tú",
+//        "lastName":"tú",
+//        "password":"anhtu123",
+//        "phoneNumber":"0327880046",
+//        "email":"tú@gmail.com"
+//        }
