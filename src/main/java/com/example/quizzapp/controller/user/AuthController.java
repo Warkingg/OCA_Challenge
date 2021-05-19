@@ -1,8 +1,6 @@
 package com.example.quizzapp.controller.user;
 
 import com.example.quizzapp.model.*;
-import com.example.quizzapp.repository.user.RoleRepository;
-import com.example.quizzapp.repository.user.UserRepository;
 import com.example.quizzapp.services.jwt.JwtService;
 import com.example.quizzapp.services.role.RoleService;
 import com.example.quizzapp.services.user.IUserService;
@@ -17,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -61,11 +58,6 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), currentUser.getFirstName(), userDetails.getAuthorities()));
     }
 
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello() {
-        return new ResponseEntity<>("Hello World", HttpStatus.OK);
-    }
-
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {
@@ -93,7 +85,6 @@ public class AuthController {
             roles1.add(role1);
             user.setRoles(roles1);
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRePassword(passwordEncoder.encode(user.getRePassword()));
         userService.save(user);
         VerificationToken token = new VerificationToken(user);

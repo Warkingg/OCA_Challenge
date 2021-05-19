@@ -41,6 +41,7 @@ public class UserPrinciple implements UserDetails {
                 authorities
         );
     }
+
     public Long getId() {
         return id;
     }
