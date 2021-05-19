@@ -19,13 +19,15 @@ public class Quiz {
     @NotNull(message = "Enter content")
     private String content;
 
+    private Integer quantity;
+
     private Time startTime;
 
     private Time endTime;
 
     private Integer score;
 
-    private Integer level; //Add level attribute
+    private String level; //Add level attribute
 
     @ManyToOne
     private User user;

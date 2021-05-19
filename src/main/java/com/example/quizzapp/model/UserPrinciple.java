@@ -1,4 +1,4 @@
 package com.example.quizzapp.model;
 
-public class UserPrinciple{
+public class UserPrinciple {
 }
