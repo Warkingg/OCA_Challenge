@@ -19,6 +19,7 @@ public class QuizCategoryController {
     private QuizCategoryService quizCategoryService;
 
     @GetMapping("/list")
+    //Pass request parameter like this -> http://localhost:8080/category/list?page=4&size=2  -return-> "Page request [number: 4, size 2, sort: UNSORTED]"
     public ResponseEntity<Page<QuizCategory>> getAllCategory(Pageable pageable) {
         Page<QuizCategory> quizCategories = quizCategoryService.findAll(pageable);
         return new ResponseEntity<>(quizCategories, HttpStatus.OK);
