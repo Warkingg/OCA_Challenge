@@ -5,6 +5,7 @@ import com.example.quizzapp.services.quizcategory.QuizCategoryService;
 import jdk.jfr.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,9 @@ public class QuizCategoryController {
 
     @GetMapping("/list")
     //Pass request parameter like this -> http://localhost:8080/category/list?page=4&size=2  -return-> "Page request [number: 4, size 2, sort: UNSORTED]"
-    public ResponseEntity<Page<QuizCategory>> getAllCategory(Pageable pageable) {
+    public ResponseEntity<Page<QuizCategory>> getAllCategory(@RequestParam int page, 
+                                                             @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<QuizCategory> quizCategories = quizCategoryService.findAll(pageable);
         return new ResponseEntity<>(quizCategories, HttpStatus.OK);
     }
