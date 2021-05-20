@@ -15,7 +15,7 @@ public class Quiz {
 
     @NotNull(message = "Enter title")
     private String title;
-
+    
     @NotNull(message = "Enter content")
     private String content;
 

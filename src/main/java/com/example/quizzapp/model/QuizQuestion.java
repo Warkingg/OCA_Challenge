@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,5 +26,6 @@ public class QuizQuestion {
 
     @ManyToOne
     private Quiz quiz;
+
 
 }
