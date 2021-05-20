@@ -10,4 +10,6 @@ public class QuizzAppApplication {
         SpringApplication.run(QuizzAppApplication.class, args);
     }
 
+    //Test commit
+
 }
