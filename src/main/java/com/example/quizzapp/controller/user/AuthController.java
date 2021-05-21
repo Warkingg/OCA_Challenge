@@ -17,9 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-
 import javax.validation.Valid;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -59,11 +59,11 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult){
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             Response response = new Response();
             response.setMessage("xảy ra lỗi");
-            return new ResponseEntity<>("xảy ra lỗi",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (!userService.isCorrectConfirmPassword(user)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -92,4 +92,17 @@ public class AuthController {
         verificationTokenService.save(token);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getProfile(@PathVariable Long id) {
+        Optional<User> userOptional = this.userService.findById(id);
+        if (userOptional.isPresent()){
+            return new ResponseEntity<>(userOptional.get(),HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+
+
+
 }
